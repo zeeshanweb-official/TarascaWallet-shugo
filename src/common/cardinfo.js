@@ -100,6 +100,7 @@ export function CardInfo({card}) {
       <Typography variant="h4">Card Info</Typography>
       <Typography variant="h6">Name : {card.name}</Typography>
       <Typography variant="body1">Continent : {card.channel}</Typography>
+      <Typography>Rarity : {card.rarity}</Typography>
       <Typography>Asset Ident : {card.asset}</Typography>
       <Typography>Amount : {card.quantityQNT} ({card.unconfirmedQuantityQNT})</Typography>
     </Fragment>

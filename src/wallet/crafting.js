@@ -1,5 +1,5 @@
 
-import React, { Component } from 'react';
+import React, { Component, UseState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import {transferAsset} from '../common/ardorinterface';
@@ -13,13 +13,24 @@ import { CardInfo, CardImage } from '../common/cardinfo';
 import { Typography } from '@material-ui/core';
 import {TxSuccess} from '../common/txsuccess';
 import { round } from '../common/common';
+import Button from '@material-ui/core/Button';
+
 
 
 
 
 export function CraftForm(props){
   const ignisAvailableBalance = Math.min(props.wallet.balanceNQT,props.wallet.unconfirmedBalanceNQT)/NQTDIVIDER;
+ 
+const increment =()=>{
+  console.log('make your lgoic here')
+}
+ 
+const decrement =()=>{
+  console.log('write your logic here and it will not generate any error')
+}
   return(
+
     <form onSubmit={(event)=>{event.preventDefault();props.handleSendCard()}}>
       <Grid container
         justify="center"
@@ -27,9 +38,24 @@ export function CraftForm(props){
         direction="column" 
         spacing={24} 
       >
+  
+
         <Grid item>
           <Typography variant="h4">Craft card</Typography>              
         </Grid>
+
+        <Grid item>
+          <Button  
+                  onClick={decrement}>
+            -
+          </Button>
+          <Button  
+                  onClick={increment}>
+            +
+          </Button>
+        </Grid>
+        
+        
         <Grid item>
           <TextField fullWidth 
                   invalid={props.noCardsStatus.invalid} 
@@ -43,7 +69,8 @@ export function CraftForm(props){
                   }}
                   id="noCards" onChange={(event) => props.handleNoCardsChange(event)}
                   value={props.noCards}
-                  placeholder="Number of cards you want to send" />
+                  placeholder="No. cards to craft" />
+          <Typography variant="h2">{props.noCards}</Typography>
           <Typography>{props.noCardsStatus.error}</Typography>
         </Grid>
 
@@ -52,17 +79,17 @@ export function CraftForm(props){
                   invalid={props.amountNQTStatus.invalid} 
                   type="number" 
                   name="amountNQT"
-                  label={"Amount to send (max:"+round(ignisAvailableBalance,2)+")"}
+                  label={"IGNIS to send (max:"+round(ignisAvailableBalance,0)+")"}
                   variant="outlined"
                   InputLabelProps={{
                     type:"number",
                     shrink: true
                   }}
                   id="priceNQTPerShare" onChange={(event) => props.handleAmountChange(event)}
-                  value={props.amount}
+                  value={props.amountNQT*(props.noCards/5)}
                   error={props.amountNQTStatus.error}
                   placeholder="Enter amount to send" />
-            
+          <Typography variant="h2">{props.amountNQT*(props.noCards/5)}</Typography>
           </Grid>
         <Grid item>
           <SignActionField  {...props} 
@@ -76,6 +103,7 @@ export function CraftForm(props){
 
 
 
+
 export class Crafting extends Component {
   constructor (props){
     console.log(props);
@@ -83,7 +111,7 @@ export class Crafting extends Component {
     this.state = {
       card: '{}',
       noCards:5,
-      amountNQT:1,
+      amountNQT:100,
       amountNQTStatus:{invalid:undefined,error:""},
       noCardsStatus:{invalid:false,error:''},
       passPhrase:"",
@@ -92,10 +120,38 @@ export class Crafting extends Component {
       receiverRsStatus:{invalid:undefined,error:''},
       message:"not yet implemented",
       displayQrReader:false
-    };
+          };
+  
+
+
     this.sendCard = this.sendCard.bind(this);
     this.sendCoin = this.sendCoin.bind(this);
     this.refresh = this.refresh.bind(this);
+
+    this.increment = this.increment.bind(this);
+    this.decrement = this.decrement.bind(this);
+
+
+  }
+
+  increment() {
+    this.setState(prevState => {
+      const noCards= ++prevState.noCards
+
+      return {
+        noCards
+      };
+    });
+  }
+
+  decrement() {
+    this.setState(prevState => {
+      const noCards = prevState.noCards > 0? --prevState.noCards : 0
+
+      return {
+        noCards
+      };
+    });
   }
 
   refresh(){
@@ -115,6 +171,7 @@ export class Crafting extends Component {
   componentWillUnmount(){
     clearInterval(this.timer);
   }
+
 
 
   sendCard(event) {
@@ -184,7 +241,7 @@ sendIgnis(this.props.nodeurl, amountNQT, self.state.receiverRS, this.state.passP
   handleNoCardsChange(event){
     let value = event.target.value;
     let max=this.state.card.quantityQNT;
-    let min=1;
+    let min=5;
     this.setState(
       {noCards:value},
       ()=>{let fieldStatus = validateQuantity(value,max,min,this.state.noCardsStatus);
@@ -209,7 +266,7 @@ sendIgnis(this.props.nodeurl, amountNQT, self.state.receiverRS, this.state.passP
   handleAmountChange(event){
     let value = event.target.value;
     let max=Math.min(this.props.wallet.balanceNQT,this.props.wallet.unconfirmedBalanceNQT)/NQTDIVIDER;
-    let min=1;
+    let min=100;
     this.setState(
       {amountNQT:value},
       ()=>{let fieldStatus = validateQuantity(value,max,min,this.state.amountNQTStatus);
@@ -227,6 +284,7 @@ sendIgnis(this.props.nodeurl, amountNQT, self.state.receiverRS, this.state.passP
     console.log(this.state);
     return(
       <div style={{textAlign:"center", padding:20, width:"90%", display:"inline-block"}}>
+        
         <Grid container
           justify="center"
           alignItems="stretch"
@@ -257,6 +315,7 @@ sendIgnis(this.props.nodeurl, amountNQT, self.state.receiverRS, this.state.passP
           }          
           </Grid>
         </Grid>
+
       </div>
     )
   }

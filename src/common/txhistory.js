@@ -48,7 +48,7 @@ export function TimeStamp({tx,eb}){
     <Fragment>
       <Typography>
         
-        //{datestring} {timestring} ({status})
+        {datestring} {timestring} ({status})
         
         </Typography>
     </Fragment>
@@ -116,6 +116,9 @@ function IncomingCardTransferMobile({tx,card,eb,badge}){
           </Grid>
           <Grid item> 
             <TimeStamp tx={tx} eb={eb}/>
+          </Grid>
+          <Grid item>            
+            <Typography align="left">Rarity: {card.rarity}</Typography>
           </Grid>
           <Grid item>            
             <Typography align="left">Sender: {parseAccount( tx.senderRS)}</Typography>
@@ -260,6 +263,9 @@ function OutgoingCardTransferMobile({tx,card,eb,badge}){
           </Grid>
           <Grid item> 
             <TimeStamp tx={tx} eb={eb}/>
+          </Grid>
+          <Grid item>            
+            <Typography align="left">Rarity: {tx.attachment.rarity}</Typography>
           </Grid>
           <Grid item>            
             <Typography align="left">Recipient: {parseAccount( tx.recipientRS)}</Typography>

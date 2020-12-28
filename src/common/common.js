@@ -90,6 +90,7 @@ export function cardGeneratorGrey(asset,quantityQNT,unconfirmedQuantityQNT,nodeu
     assetname:asset.name,
     name:cardDetails.name,
     channel:cardDetails.channel,
+    rarity:cardDetails.rarity,
     quantityQNT:quantityQNT,
     unconfirmedQuantityQNT:unconfirmedQuantityQNT,
     totalQuantitiyQNT:asset.quantityQNT,

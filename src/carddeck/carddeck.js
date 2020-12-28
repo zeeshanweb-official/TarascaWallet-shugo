@@ -8,6 +8,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Thumb, ThumbMobile } from './thumb';
 import {Filter} from './filter';
+import {RarityFilter} from './filter';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
@@ -70,6 +71,7 @@ export class CardDeck extends Component {
     this.state = {
       cards:[],
       selectedChannel:"all",
+      selectedRarity:"all",
       slideIndex:0
     }
     this.refresh = this.refresh.bind(this);    
@@ -97,6 +99,7 @@ export class CardDeck extends Component {
 
   render() {
     let channels = new Set(this.state.cards.map((card) => {return card.channel}))
+    let rarity = new Set(this.state.cards.map((card) => {return card.rarity}))
     let cards = []
     if (this.state.selectedChannel !== "all") {
       cards = this.state.cards.filter((card) => (card.channel === this.state.selectedChannel) & (this.props.showAllCards | (card.quantityQNT > 0)));
@@ -104,6 +107,8 @@ export class CardDeck extends Component {
     else {
       cards = this.state.cards.filter((card) => (this.props.showAllCards | (card.quantityQNT > 0)));
     } 
+
+    
     const max = cards.length;
     var settings = {
       dots: true,
@@ -148,6 +153,7 @@ export class CardDeck extends Component {
     return (
         <div style={{display:"block", textAlign:"center", width:"100%", padding:20}}>
           <Filter channels={[...channels]} onClick={(chan)=>this.setState({selectedChannel:chan})} />
+          <RarityFilter rarity={[...rarity]} onClick={(rare)=>this.setState({selectedrarity:rare})} />
           <div style={{width:"90%",marginLeft:"auto",marginRight:"auto"}}>
             <Hidden smDown>
               <div style={{width:"100%",padding:20}}>
