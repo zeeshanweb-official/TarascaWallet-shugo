@@ -8,7 +8,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Thumb, ThumbMobile } from './thumb';
 import {Filter} from './filter';
-import {RarityFilter} from './filter';
+import {RarityFilter, StayOnSelectWithSingleInitialValue} from './filter';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
@@ -101,6 +101,7 @@ export class CardDeck extends Component {
     let channels = new Set(this.state.cards.map((card) => {return card.channel}))
     let rarity = new Set(this.state.cards.map((card) => {return card.rarity}))
     let cards = []
+  
     if (this.state.selectedChannel !== "all") {
       cards = this.state.cards.filter((card) => (card.channel === this.state.selectedChannel) & (this.props.showAllCards | (card.quantityQNT > 0)));
     }
@@ -108,6 +109,12 @@ export class CardDeck extends Component {
       cards = this.state.cards.filter((card) => (this.props.showAllCards | (card.quantityQNT > 0)));
     } 
 
+    if (this.state.selectedRarity !== "all") {
+      cards = this.state.cards.filter((card) => (card.rarity === this.state.selectedRarity) & (this.props.showAllCards | (card.quantityQNT > 0)));
+    }
+    else {
+      cards = this.state.cards.filter((card) => (this.props.showAllCards | (card.quantityQNT > 0)));
+    } 
     
     const max = cards.length;
     var settings = {
@@ -153,7 +160,8 @@ export class CardDeck extends Component {
     return (
         <div style={{display:"block", textAlign:"center", width:"100%", padding:20}}>
           <Filter channels={[...channels]} onClick={(chan)=>this.setState({selectedChannel:chan})} />
-          <RarityFilter rarity={[...rarity]} onClick={(rare)=>this.setState({selectedrarity:rare})} />
+          <RarityFilter rarity={[...rarity]} onClick={(rare)=>this.setState({selectedRarity:rare})} />
+          
           <div style={{width:"90%",marginLeft:"auto",marginRight:"auto"}}>
             <Hidden smDown>
               <div style={{width:"100%",padding:20}}>

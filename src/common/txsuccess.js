@@ -35,7 +35,12 @@ export function TxSuccess({response,returnLink}){
               <Link style={{textDecoration: 'none'}} to="/game/exchange">
                   <Button fullWidth variant="outlined">Back to Exchange</Button>
               </Link>    
-            </Grid>    
+            </Grid>
+            <Grid item>  
+              <Link style={{textDecoration: 'none'}} to="/game/history">
+                  <Button fullWidth variant="outlined">Back to Transaction History</Button>
+              </Link>    
+            </Grid>      
           </Grid>
         ) : (
           <Grid container

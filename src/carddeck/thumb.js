@@ -22,6 +22,19 @@ export function Thumb({card,index,onClick,width}) {
     )
 }
 
+export function ThumbPlain({card,index,width}) {
+    return(
+        <div key={index} style={{width:width,float:"left"}}>
+            <div>
+            <img src={card.cardThumbUrl} alt="card img"
+                width="120%"
+                style={{opacity:card.quantityQNT > 0 ? 1 : 0.1}}/>                      
+            </div>
+
+        </div>
+    )
+}
+
 export function ThumbMobile({card,index,onClick,width}) {
     return (
         <div key={index} style={{width:width,float:"left"}}>

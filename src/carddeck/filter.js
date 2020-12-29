@@ -2,7 +2,9 @@ import React from 'react';
 import Chip from '@material-ui/core/Chip';
 import Grid from '@material-ui/core/Grid';
 import png_world from './images/world.png';
-
+import png_diamond from './images/diamond.png';
+import Select from 'react-select';
+import SelectSearch from 'react-select';
 
 
 
@@ -44,11 +46,11 @@ export function RarityFilter({rarity,onClick}) {
             alignItems="center"
         >
             <Grid item>
-            <img src={png_world} alt="World" height="40px"/>
+            <img src={png_diamond} alt="diamond" height="40px"/>
             </Grid>
             <Grid item>
                 <Chip
-                    label="All Cards"
+                    label="All rarities"
                     onClick={()=>onClick("all")}
                     variant="outlined"
                 />

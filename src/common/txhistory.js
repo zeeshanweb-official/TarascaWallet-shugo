@@ -218,7 +218,6 @@ function OutgoingCardTransfer({tx,card,eb,badge}){
                   <TimeStamp tx={tx} eb={eb}/>
                 </Grid>
               </Grid>
-            
               <Grid item xs={6} container direction="column" alignItems="flex-start">
                 <Grid item>
                   <Typography>Sender: You</Typography>
@@ -265,7 +264,7 @@ function OutgoingCardTransferMobile({tx,card,eb,badge}){
             <TimeStamp tx={tx} eb={eb}/>
           </Grid>
           <Grid item>            
-            <Typography align="left">Rarity: {tx.attachment.rarity}</Typography>
+            <Typography align="left">Rarity: {card.rarity}</Typography>
           </Grid>
           <Grid item>            
             <Typography align="left">Recipient: {parseAccount( tx.recipientRS)}</Typography>

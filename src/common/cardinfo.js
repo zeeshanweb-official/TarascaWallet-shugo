@@ -97,12 +97,23 @@ export const CardImageNoButton = withStyles(styles)(CardImageNoButton_);
 export function CardInfo({card}) {
   return(
     <Fragment>
-      <Typography variant="h4">Card Info</Typography>
-      <Typography variant="h6">Name : {card.name}</Typography>
+        <Typography variant="h4">Card Info</Typography>
+        <Typography variant="h6">Name : {card.name}</Typography>
+        <Typography variant="body1">Continent : {card.channel}</Typography>
+        <Typography>Rarity : {card.rarity}</Typography>
+        <Typography>Asset Ident : {card.asset}</Typography>
+        <Typography>Amount : {card.quantityQNT} ({card.unconfirmedQuantityQNT})</Typography>
+    </Fragment>
+  )
+}
+
+export function CardInfoSlim({card}) {
+  return(
+    <Fragment>
+      <Typography variant="h6">{card.name}</Typography>
       <Typography variant="body1">Continent : {card.channel}</Typography>
       <Typography>Rarity : {card.rarity}</Typography>
-      <Typography>Asset Ident : {card.asset}</Typography>
-      <Typography>Amount : {card.quantityQNT} ({card.unconfirmedQuantityQNT})</Typography>
+      <Typography>Quantity : {card.quantityQNT}</Typography>
     </Fragment>
   )
 }

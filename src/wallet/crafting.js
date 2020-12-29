@@ -9,11 +9,18 @@ import {NQTDIVIDER,CURRENCY} from '../common/constants';
 import {SignActionField} from '../common/signactionfield';
 import {QrAccountField} from '../common/accountfield';
 import { fetchCard } from '../common/common';
-import { CardInfo, CardImage } from '../common/cardinfo';
+import { CardInfo, CardImage, CardInfoSlim } from '../common/cardinfo';
+import { ThumbPlain } from '../carddeck/thumb';
 import { Typography } from '@material-ui/core';
 import {TxSuccess} from '../common/txsuccess';
 import { round } from '../common/common';
-import Button from '@material-ui/core/Button';
+
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Button from 'react-bootstrap/Button';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+
+
 
 
 
@@ -22,13 +29,6 @@ import Button from '@material-ui/core/Button';
 export function CraftForm(props){
   const ignisAvailableBalance = Math.min(props.wallet.balanceNQT,props.wallet.unconfirmedBalanceNQT)/NQTDIVIDER;
  
-const increment =()=>{
-  console.log('make your lgoic here')
-}
- 
-const decrement =()=>{
-  console.log('write your logic here and it will not generate any error')
-}
   return(
 
     <form onSubmit={(event)=>{event.preventDefault();props.handleSendCard()}}>
@@ -38,58 +38,92 @@ const decrement =()=>{
         direction="column" 
         spacing={24} 
       >
-  
+
+        
+
 
         <Grid item>
-          <Typography variant="h4">Craft card</Typography>              
+          <Typography variant="h4">Crafting Cube </Typography>  
+          <Typography variant="h6">&nbsp;</Typography>  
+          <ThumbPlain card={props.card} index={props.index} width="80px"/>    
+          <CardInfoSlim card={props.card}/>         
         </Grid>
 
         <Grid item>
-          <Button  
-                  onClick={decrement}>
+        <ButtonGroup>
+          <Button 
+            variant="outline-light"
+            size="sm"
+            onClick={props.decrement}>
             -
           </Button>
-          <Button  
-                  onClick={increment}>
-            +
-          </Button>
-        </Grid>
-        
-        
-        <Grid item>
-          <TextField fullWidth 
-                  invalid={props.noCardsStatus.invalid} 
-                  type="number" 
-                  name="noCards"
-                  label={"Number of Cards (max: "+props.card.quantityQNT+")"}
+          <TextField  
+                  invalid={props.noCardsStatus.invalid}
+                  inputProps={{min: 0, style: { textAlign: 'center' }}}
+                  name="noCrafts"
+                  label={"Craft card(s) (max: "+Math.floor((props.card.quantityQNT/5))+")"}
                   variant="outlined"
                   InputLabelProps={{
                     type:"number",
                     shrink: true
                   }}
-                  id="noCards" onChange={(event) => props.handleNoCardsChange(event)}
-                  value={props.noCards}
+                  value={props.noCrafts}
                   placeholder="No. cards to craft" />
-          <Typography variant="h2">{props.noCards}</Typography>
+              
+          <Button 
+            variant="outline-light"
+            size="sm"
+            onClick={props.increment}>
+            +
+          </Button>
+        </ButtonGroup>
+          </Grid>
+               
+        
+        <Grid item>
+          <TextField fullWidth 
+                  invalid={props.noCardsStatus.invalid} 
+                  margin="dense"
+                  size="small"
+                  name="noCards"
+                  label={"Cards to sacrifice"}
+                  variant="outlined"
+                  InputLabelProps={{
+                    type:"number",
+                    shrink: true
+                  }}
+                  InputProps={{
+                    readOnly: true,
+                    endAdornment: <InputAdornment position="end">{props.card.name}</InputAdornment>
+                  }}
+                  id="noCards" onChange={(event) => props.handleNoCardsChange(event)}
+                  value={props.noCards*props.noCrafts}
+                  error={props.noCardsStatus.error}
+                  placeholder="No. cards to craft" />
+
           <Typography>{props.noCardsStatus.error}</Typography>
         </Grid>
 
         <Grid item>
               <TextField fullWidth
                   invalid={props.amountNQTStatus.invalid} 
-                  type="number" 
+                  margin="dense"
                   name="amountNQT"
-                  label={"IGNIS to send (max:"+round(ignisAvailableBalance,0)+")"}
+                  label={"Crafting costs"}
                   variant="outlined"
                   InputLabelProps={{
                     type:"number",
                     shrink: true
                   }}
+                  InputProps={{
+                    readOnly: true,
+                    startAdornment: <InputAdornment position="start">IGNIS</InputAdornment>
+                  }}
                   id="priceNQTPerShare" onChange={(event) => props.handleAmountChange(event)}
-                  value={props.amountNQT*(props.noCards/5)}
+                  value={props.amountNQT*(props.noCrafts)}
                   error={props.amountNQTStatus.error}
                   placeholder="Enter amount to send" />
-          <Typography variant="h2">{props.amountNQT*(props.noCards/5)}</Typography>
+            <Typography>{props.amountNQTStatus.error}</Typography>
           </Grid>
         <Grid item>
           <SignActionField  {...props} 
@@ -111,6 +145,7 @@ export class Crafting extends Component {
     this.state = {
       card: '{}',
       noCards:5,
+      noCrafts:0,
       amountNQT:100,
       amountNQTStatus:{invalid:undefined,error:""},
       noCardsStatus:{invalid:false,error:''},
@@ -134,22 +169,23 @@ export class Crafting extends Component {
 
   }
 
-  increment() {
-    this.setState(prevState => {
-      const noCards= ++prevState.noCards
 
+  increment() {
+    let max=this.state.card.quantityQNT;
+    this.setState(prevState => {
+      const noCrafts = prevState.noCrafts + 1 ? Math.floor((max/5)) : Math.floor((max/5))
       return {
-        noCards
+        noCrafts
       };
     });
   }
 
   decrement() {
     this.setState(prevState => {
-      const noCards = prevState.noCards > 0? --prevState.noCards : 0
+      const noCrafts = prevState.noCrafts > 0 ? prevState.noCrafts - 1 : 0
 
       return {
-        noCards
+        noCrafts
       };
     });
   }
@@ -291,12 +327,7 @@ sendIgnis(this.props.nodeurl, amountNQT, self.state.receiverRS, this.state.passP
           direction="row"
           spacing={24}
         >
-          <Grid item className="boxed" style={{marginTop: 10, marginBottom:10, backgroundColor:'rgb(16 57 43)', border:'1px solid', borderColor:'#ffffff3b'}}>
-            <CardInfo card={this.state.card}/>    
-          </Grid>
-          <Grid item>
-            <CardImage card={this.state.card}/>      
-          </Grid>
+
           <Grid item className="boxed" style={{marginTop: 10, marginBottom:10, backgroundColor:'rgb(16 57 43)', border:'1px solid', borderColor:'#ffffff3b'}}>
           { this.state.bought ? (
               <TxSuccess/>
@@ -310,7 +341,11 @@ sendIgnis(this.props.nodeurl, amountNQT, self.state.receiverRS, this.state.passP
                       handleSendCard={()=>{this.sendCoin(); this.sendCard();}}
                       openQRCamera={this.openQRCamera}
                       handleToggle={this.toggler}
-                      formValid={this.state.formValid}/>
+                      formValid={this.state.formValid}
+                      increment={this.increment}
+                      decrement={this.decrement}
+                    />
+
             )
           }          
           </Grid>
